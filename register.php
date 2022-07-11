@@ -41,11 +41,9 @@ if (isset($_POST["submit"])) {
         if (empty($nameErr) && empty($emailErr) && empty($passwordErr)) {
             // if connection was succesfull
             if (mysqli_query($conn, $query)) {
-                session_start();
-                $_SESSION['auth'] = 'true';
-                $_SESSION["email"] = $email;
+
                 $success = "user was created succesfully";
-                header("location:index.php");
+                header("location:login.php");
             } else {
                 echo "An error has occured" . mysqli_error($conn);
             }

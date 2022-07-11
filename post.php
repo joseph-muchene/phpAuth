@@ -4,8 +4,22 @@ session_start();
 
 ?>
 
+<?php
+$success = "";
+if (isset($_GET["submit"])) {
+    $text = $_GET["text"];
+    $title = $_GET["title"];
+    $description = $_GET["description"];
+    $query = "INSERT INTO posts(title,description,text) VALUES ('$title','$description','$text')";
+    if (mysqli_query($conn, $query)) {
+        $success = "post created succesfully";
+    } else {
+        echo 'post creation error' . mysqli_error($conn);
+    }
+}
 
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +27,7 @@ session_start();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auth </title>
+    <title>loco</title>
 
     <!--bootstrap css  -->
     <!-- CSS only -->
@@ -21,10 +35,10 @@ session_start();
     <!-- bootstrap js -->
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
-
     <!-- navigation -->
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
@@ -52,42 +66,35 @@ session_start();
             </div>
         </div>
     </nav>
+    <!-- section -->
+    <div class="container">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"])  ?>" method="get">
+            <div class="mt-3">
+                <label for="title">title:</label>
+                <input type="text" class="form-control" name="title">
+            </div>
+            <div class="mt-3">
+                <label for="description">description:</label>
+                <input type="text" class="form-control" name="description">
+            </div>
 
-    <?php
 
-    // check if user in session
-    if (!$_SESSION['auth']) {
-        header('Location:login.php');
-    }
-    $sessionemail = $_SESSION["email"];
-    $user = "SELECT * FROM users WHERE email = '$sessionemail' ";
-    $result = mysqli_query($conn, $user);
-    $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            <div class="mt-3">
+                <label for="text">text:</label>
+                <textarea name="text" id="text" cols="20" rows="5" class="form-control " style="resize:none ;"></textarea>
+            </div>
+
+            <div class="mt-3">
+                <input type="submit" class="btn btn-primary" name="submit">
+            </div>
+
+        </form>
+
+        <p class="lead text-center"><a href="index.php" class="text-decoration-none">Back home </a></p>
+    </div>
 
 
-    $username = "";
-    $userId = "";
-    foreach ($users as $user) {
-        $username = $user["name"];
-        $userId = $user["id"];
-    }
 
-    ?>
-
-    <header class="jumbotron bg-secondary p-4">
-
-        <h1 class="text-center">Welcome <?php
-                                        echo $username;
-                                        ?>
-        </h1>
-
-    </header>
-
-    <section class="container ">
-        <button class="btn btn-primary mt-4">
-            <a href='./post.php?<?php echo "userId=" ?><?php echo $userId ?>' class="text-decoration-none text-white">create a post</a>
-        </button>
-    </section>
 </body>
 
 </html>
